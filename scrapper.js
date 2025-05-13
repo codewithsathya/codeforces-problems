@@ -19,10 +19,13 @@ async function run() {
 
     let count = 0;
 
+    const ignoreContests = new Set([2052, 1912, 1666, 1510, 1267, 1089]);
+
     for (const problem of problems) {
         if (isShuttingDown) break;
 
         const { contestId, index } = problem;
+        // if(!ignoreContests.has(contestId)) continue;
         const id = `${contestId}:${index}`;
         if (questionsData[id]) {
             console.log(`Skipped ${id}`);
@@ -31,15 +34,22 @@ async function run() {
         }
 
         const url = `https://codeforces.com/contest/${contestId}/problem/${index}`;
-        const html = await browserClient.getData(url);
-        questionsData[id] = true;
-        fs.writeJSONSync(dataFilePath, questionsData);
-        fs.writeFileSync(`./content/${id}.html`, html);
 
-        console.log(`Saved ${id} problem, ${count} problems`);
-        count++;
-        const sleepTime = Math.random() * 1000 + 500;
-        // await sleep(sleepTime);
+        try {
+            const html = await browserClient.getData(url);
+            questionsData[id] = true;
+            fs.writeJSONSync(dataFilePath, questionsData);
+            fs.writeFileSync(`./content/${id}.html`, html);
+
+            console.log(`Saved ${id} problem, ${count} problems`);
+            count++;
+            const sleepTime = Math.random() * 1000 + 500;
+            // await sleep(sleepTime);
+        } catch (error) {
+            questionsData[id] = true;
+            fs.writeJSONSync(dataFilePath, questionsData);
+            continue;
+        }
     }
 
     await shutdown();

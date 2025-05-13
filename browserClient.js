@@ -12,7 +12,8 @@ class BrowserClient {
 
     async initialize() {
         this.browser = await puppeteer.launch({
-            enableExtensions: false,
+            // executablePath: "/usr/bin/chromium-browser",
+            enableExtensions: "false",
             headless: true,
             args: [
                 "--no-sandbox",
