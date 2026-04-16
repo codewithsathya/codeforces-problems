@@ -14,7 +14,7 @@ class BrowserClient {
         this.browser = await puppeteer.launch({
             // executablePath: "/usr/bin/chromium-browser",
             enableExtensions: "false",
-            headless: true,
+            headless: false,
             args: [
                 "--no-sandbox",
                 "--disable-setuid-sandbox",
